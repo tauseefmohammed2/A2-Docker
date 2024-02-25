@@ -1,0 +1,32 @@
+schemaVersion: "2.0.0"
+
+metadataTest:
+  entrypoint: ["java", "-jar", "/app/calculator.jar"] # Verifying the container has the correct entrypoint to run the application
+  workdir: "/app" # Checkingthe working directory is set correctly in the Docker container
+  labels:
+    - key: "version"
+      value: "1.0" # Checks for a label
+    - key: "description"
+      value: "Simple Java Calculator" # Checks for the application description label
+    - key: "maintainer"
+      value: "tmohamm4@depaul.edu" # Checks for a label indicating the maintainer
+
+fileExistenceTests:
+  - name: "Checking Calculator JAR File"
+    path: "/app/calculator.jar"
+    shouldExist: true # Checks that the JAR file actually exists in the specified path
+    permissions: "-rw-r--r--" # Verifies that the file has the correct permissions set
+  - name: "Unwanted File Non-Existence Test" # Test to check unnecessary files are not included
+    path: "/app/debug.log"
+    shouldExist: false # Ensures the file does not exist in the container checking for enhanced security and minimal image size
+
+commandTests:
+  - name: "Application Command Line Argument Test"
+    command: "java"
+    args: # Arguments passed to the command, simulating a user input to the application
+      - "-jar"
+      - "/app/calculator.jar"
+      - "5"
+      - "+"
+      - "5"
+    expectedOutput: ["Result: 10.00"] # The expected output
